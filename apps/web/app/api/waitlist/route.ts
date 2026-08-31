@@ -45,7 +45,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "Enter a valid email." }, { status: 400 });
   }
 
-  const webhook = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
+  const webhook =
+    process.env.GOOGLE_SHEETS_WEBHOOK_URL ||
+    "https://script.google.com/macros/s/AKfycby7sjKiocy8WazpsZNAOtdpaoshr3HCwV4RB7v3G0RNlq7-BqpxZrX-4qXKs005Bj0/exec";
   if (!webhook) {
     console.error("GOOGLE_SHEETS_WEBHOOK_URL is not set");
     return NextResponse.json(
