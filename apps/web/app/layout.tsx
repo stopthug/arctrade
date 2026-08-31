@@ -15,8 +15,12 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata = {
-  title: "ArcTrade — Trade Arc from Telegram",
-  description: "Fast token discovery. Simple execution. Real-time portfolio tracking on Arc.",
+  title: {
+    default: "ArcTrade — Waitlist",
+    template: "%s — ArcTrade",
+  },
+  description:
+    "Join the ArcTrade waitlist. Telegram-native trading for the Arc ecosystem.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

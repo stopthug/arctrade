@@ -5,7 +5,24 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        canvas: "#F7F7F5",
+        muted: "#5F5F5F",
+        wash: "#EFEFE9",
+        line: {
+          DEFAULT: "#D9D9D5",
+          soft: "#E8E8E4",
+        },
+        navy: {
+          DEFAULT: "#07101F",
+          mid: "#0C1A33",
+        },
+        arcblue: {
+          DEFAULT: "#1A53E8",
+          deep: "#0E3BB8",
+          soft: "#DBE6FF",
+        },
         ink: {
+          DEFAULT: "#0A0A0A",
           950: "#0c0d0f",
           900: "#121316",
           800: "#1a1b1f",

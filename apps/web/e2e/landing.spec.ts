@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-test("/start landing copy", async ({ page }) => {
+test("waitlist landing", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Trade Arc from Telegram." })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Open Telegram" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Trade Arc/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Join waitlist/i })).toBeVisible();
 });
 
 test("trade terminal renders catalog", async ({ page }) => {

@@ -1,48 +1,50 @@
-import Link from "next/link";
-import { Button } from "../components/ui";
+import { WaitlistForm } from "@/components/marketing/waitlist-form";
+import { WaitlistFooter, WaitlistNav } from "@/components/marketing/waitlist-chrome";
+import { WaitlistUtility } from "@/components/marketing/waitlist-utility";
+import { MarketingRoot } from "@/components/marketing/root";
+import { Shell, TechLabel } from "@/components/marketing/ui";
+import { SITE } from "@/lib/constants";
+import type { Metadata } from "next";
 
-const telegram = process.env.NEXT_PUBLIC_TELEGRAM_URL ?? "https://t.me/ArcTradeBot";
+export const metadata: Metadata = {
+  title: { absolute: SITE.title },
+  description: SITE.description,
+};
 
-export default function HomePage() {
+export default function WaitlistPage() {
   return (
-    <div className="min-h-screen bg-ink-950 text-paper">
-      <header className="flex items-center justify-between px-8 py-6 border-b border-ink-700">
-        <span className="font-mono text-xs tracking-[0.4em] text-gold">ARCTRADE</span>
-        <nav className="flex gap-6 text-sm text-mute">
-          <Link href="/docs">Docs</Link>
-          <Link href="/dashboard">Dashboard</Link>
-          <Link href="/trade">Terminal</Link>
-        </nav>
-      </header>
-      <section className="mx-auto max-w-3xl px-8 py-28">
-        <p className="font-mono text-xs tracking-[0.25em] text-gold">ARC TESTNET</p>
-        <h1 className="mt-4 text-5xl font-medium leading-tight tracking-tight">Trade Arc from Telegram.</h1>
-        <p className="mt-6 max-w-xl text-lg text-mute leading-relaxed">
-          Fast token discovery. Simple execution. Real-time portfolio tracking.
-        </p>
-        <div className="mt-10 flex gap-4">
-          <a href={telegram}>
-            <Button>Open Telegram</Button>
-          </a>
-          <Link href="/trade">
-            <Button variant="ghost">Open terminal</Button>
-          </Link>
-        </div>
-        <dl className="mt-20 grid grid-cols-3 gap-6 text-sm">
-          <div>
-            <dt className="text-mute">Network</dt>
-            <dd className="mt-1 font-mono">Arc Testnet · 5042002</dd>
-          </div>
-          <div>
-            <dt className="text-mute">Gas</dt>
-            <dd className="mt-1 font-mono">USDC</dd>
-          </div>
-          <div>
-            <dt className="text-mute">Execution</dt>
-            <dd className="mt-1 font-mono">Standard</dd>
-          </div>
-        </dl>
-      </section>
-    </div>
+    <MarketingRoot>
+      <div className="flex min-h-screen flex-col">
+        <WaitlistNav />
+        <main id="main" className="flex flex-1 flex-col">
+          <Shell className="flex flex-1 flex-col">
+            <div className="grid flex-1 grid-cols-4 md:grid-cols-6 lg:grid-cols-12">
+              <section className="col-span-4 flex flex-col justify-center border-b border-line px-5 py-16 md:col-span-6 md:px-8 md:py-20 lg:col-span-7 lg:border-b-0 lg:border-r lg:py-24">
+                <TechLabel tone="blue">Telegram-native trading</TechLabel>
+                <h1 className="display mt-6 text-[44px] md:text-[68px] lg:text-[84px]">
+                  Trade Arc.
+                  <br />
+                  From Telegram.
+                </h1>
+                <p className="mt-8 max-w-[42ch] text-lg leading-relaxed text-muted">
+                  Join the waitlist for ArcTrade. A simple interface to buy, sell and
+                  track tokens on Arc — without leaving Telegram.
+                </p>
+                <p className="mt-4 text-[12px] uppercase tracking-[0.16em] text-ink">
+                  0.5% service fee per executed trade
+                </p>
+                <div className="relative mt-10 max-w-[520px]">
+                  <WaitlistForm />
+                </div>
+              </section>
+              <section className="col-span-4 flex flex-col justify-center px-5 py-12 md:col-span-6 md:px-8 lg:col-span-5 lg:py-16">
+                <WaitlistUtility />
+              </section>
+            </div>
+          </Shell>
+        </main>
+        <WaitlistFooter />
+      </div>
+    </MarketingRoot>
   );
 }

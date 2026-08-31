@@ -1,0 +1,316 @@
+.marketing {
+  --canvas: #f7f7f5;
+  --ink: #0a0a0a;
+  --muted: #5f5f5f;
+  --line: #d9d9d5;
+  --line-soft: #e8e8e4;
+  --blue: #1a53e8;
+  --blue-deep: #0e3bb8;
+  --blue-soft: #dbe6ff;
+  --navy: #07101f;
+  --navy-mid: #0c1a33;
+  --paper: #ffffff;
+  --paper-2: #efefe9;
+  color-scheme: light;
+  background: var(--canvas);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.marketing ::selection {
+  background: var(--blue);
+  color: #fff;
+}
+
+.marketing :focus-visible {
+  outline: 1px solid var(--blue);
+  outline-offset: 3px;
+}
+
+.marketing .shell {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1440px;
+  border-inline: 1px solid var(--line);
+}
+
+.marketing .display {
+  font-weight: 600;
+  letter-spacing: -0.048em;
+  line-height: 0.92;
+  text-wrap: balance;
+}
+
+.marketing .hatch {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 5px,
+    rgba(10, 10, 10, 0.045) 5px,
+    rgba(10, 10, 10, 0.045) 6px
+  );
+}
+
+.marketing .hatch-blue {
+  background-image: radial-gradient(circle at 1px 1px, var(--blue) 1px, transparent 0);
+  background-size: 7px 7px;
+}
+
+/* 3D module */
+.iso-scene {
+  perspective: 1100px;
+  perspective-origin: 50% 40%;
+}
+
+.iso-module {
+  position: relative;
+  width: var(--iso-size, 132px);
+  height: var(--iso-size, 132px);
+  transform-style: preserve-3d;
+  transform: rotateX(-20deg) rotateY(28deg);
+}
+
+.iso-face {
+  position: absolute;
+  border: 1px solid var(--iso-edge, #d9d9d5);
+  backface-visibility: hidden;
+}
+
+.iso-front,
+.iso-back {
+  inset: 0;
+  border-radius: 18px;
+}
+
+.iso-front {
+  background: var(--iso-front, #f3f3ee);
+  transform: translateZ(calc(var(--iso-depth, 22px) / 2));
+  display: grid;
+  place-items: center;
+}
+
+.iso-back {
+  background: var(--iso-side, #d4d4ce);
+  transform: rotateY(180deg) translateZ(calc(var(--iso-depth, 22px) / 2));
+}
+
+.iso-top,
+.iso-bottom {
+  width: var(--iso-size, 132px);
+  height: var(--iso-depth, 22px);
+  left: 0;
+  top: 50%;
+  margin-top: calc(var(--iso-depth, 22px) / -2);
+}
+
+.iso-top {
+  background: var(--iso-top, #ffffff);
+  transform: rotateX(90deg) translateZ(calc(var(--iso-size, 132px) / 2));
+}
+
+.iso-bottom {
+  background: var(--iso-side, #d4d4ce);
+  transform: rotateX(-90deg) translateZ(calc(var(--iso-size, 132px) / 2));
+}
+
+.iso-left,
+.iso-right {
+  width: var(--iso-depth, 22px);
+  height: var(--iso-size, 132px);
+  top: 0;
+  left: 50%;
+  margin-left: calc(var(--iso-depth, 22px) / -2);
+}
+
+.iso-right {
+  background: var(--iso-side, #cfcfc8);
+  transform: rotateY(90deg) translateZ(calc(var(--iso-size, 132px) / 2));
+}
+
+.iso-left {
+  background: var(--iso-side, #e7e7e1);
+  transform: rotateY(-90deg) translateZ(calc(var(--iso-size, 132px) / 2));
+}
+
+.iso-module.is-blue {
+  --iso-front: #1a53e8;
+  --iso-top: #3d74ff;
+  --iso-side: #0e3bb8;
+  --iso-edge: #1a53e8;
+}
+
+.iso-module.is-blue .iso-front {
+  color: #fff;
+}
+
+.iso-shadow {
+  position: absolute;
+  left: 12%;
+  right: 8%;
+  bottom: -18%;
+  height: 18%;
+  background: radial-gradient(ellipse at center, rgba(10, 10, 10, 0.14), transparent 70%);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+.iso-module.is-blue + .iso-shadow,
+.iso-wrap.is-blue .iso-shadow {
+  background: radial-gradient(ellipse at center, rgba(26, 83, 232, 0.28), transparent 70%);
+}
+
+/* Process plates */
+.process-scene {
+  perspective: 1400px;
+}
+
+.process-stack {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  transform-style: preserve-3d;
+  transform: rotateX(62deg) rotateZ(-28deg);
+}
+
+.process-plate {
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  background: linear-gradient(180deg, #ffffff 0%, #efefe9 100%);
+  border: 1px solid var(--line);
+  box-shadow: 0 18px 30px rgba(10, 10, 10, 0.06);
+  display: grid;
+  place-items: center;
+  transform-style: preserve-3d;
+}
+
+.process-plate.is-active {
+  background: linear-gradient(180deg, #3d74ff 0%, #1a53e8 100%);
+  border-color: #1a53e8;
+  box-shadow: 0 22px 40px rgba(26, 83, 232, 0.28);
+  color: #fff;
+}
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+@keyframes float-y-slow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -7px, 0) rotate(0.6deg);
+  }
+}
+
+@keyframes dash-move {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+.float-y {
+  animation: float-y 6.5s ease-in-out infinite;
+}
+
+.float-y-slow {
+  animation: float-y-slow 8s ease-in-out infinite;
+}
+
+.chart-line {
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+  animation: chart-draw 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes chart-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.marketing .btn-arrow {
+  display: inline-block;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.marketing .group\/btn:hover .btn-arrow {
+  transform: translate(3px, -3px);
+}
+
+.marketing .group\/btn-down:hover .btn-arrow {
+  transform: translateY(3px);
+}
+
+.marketing .btn-primary {
+  background: var(--blue);
+  color: #fff;
+}
+
+.marketing .btn-primary:hover {
+  background: var(--blue-deep);
+}
+
+.marketing .btn-primary:active {
+  transform: translateY(1px);
+}
+
+.marketing .btn-primary:disabled,
+.marketing .btn-secondary:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.marketing .btn-primary.is-loading,
+.marketing .btn-secondary.is-loading {
+  pointer-events: none;
+}
+
+.marketing .btn-secondary {
+  background: var(--paper-2);
+  color: var(--ink);
+}
+
+.marketing .btn-secondary:hover {
+  background: #e6e6e0;
+}
+
+.marketing .btn-secondary:active {
+  transform: translateY(1px);
+}
+
+.marketing .spin {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marketing {
+    scroll-behavior: auto;
+  }
+
+  .float-y,
+  .float-y-slow,
+  .chart-line,
+  .spin {
+    animation: none !important;
+  }
+
+  .chart-line {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+}
