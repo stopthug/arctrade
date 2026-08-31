@@ -1,0 +1,324 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  ACTIVE
+  DISABLED
+  SUSPENDED
+}
+
+enum WalletStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum WalletProviderType {
+  LOCAL_ENCRYPTED
+  MPC
+  EMBEDDED
+  SMART_ACCOUNT
+  EXTERNAL
+}
+
+enum TokenPolicy {
+  STRICT
+  VERIFIED_ONLY
+  WARN_UNVERIFIED
+}
+
+enum TradeStatus {
+  CREATED
+  QUOTED
+  CONFIRMING
+  SIGNING
+  SUBMITTED
+  PENDING
+  CONFIRMED
+  FAILED
+  EXPIRED
+  CANCELLED
+}
+
+enum TransactionType {
+  SWAP
+  TRANSFER
+  APPROVAL
+  OTHER
+}
+
+enum TransactionStatus {
+  CREATED
+  SUBMITTED
+  PENDING
+  CONFIRMED
+  FAILED
+  EXPIRED
+  CANCELLED
+}
+
+model User {
+  id                   String      @id @default(cuid())
+  telegramId           String      @unique
+  telegramUsername     String?
+  firstName            String?
+  lastName             String?
+  status               UserStatus  @default(ACTIVE)
+  referralCode         String      @unique
+  slippageBps          Int         @default(50)
+  tokenPolicy          TokenPolicy @default(WARN_UNVERIFIED)
+  notifyTradeConfirmed Boolean     @default(true)
+  notifyTradeFailed    Boolean     @default(true)
+  notifyPriceAlerts    Boolean     @default(true)
+  notifyPositionAlerts Boolean     @default(true)
+  lastSeenAt           DateTime    @default(now())
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+
+  wallets        Wallet[]
+  watchlist      Watchlist[]
+  trades         Trade[]
+  positions      Position[]
+  lots           PositionLot[]
+  transactions   Transaction[]
+  referralsMade  Referral[]    @relation("Referrer")
+  referredBy     Referral?     @relation("Referred")
+  auditLogs      AuditLog[]
+  priceAlerts    PriceAlert[]
+  sessions       Session[]
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Wallet {
+  id        String             @id @default(cuid())
+  userId    String
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  address   String
+  provider  WalletProviderType @default(LOCAL_ENCRYPTED)
+  network   String             @default("arc-testnet")
+  chainId   Int                @default(5042002)
+  status    WalletStatus       @default(ACTIVE)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  secret    WalletSecret?
+  trades    Trade[]
+
+  @@unique([userId, network])
+  @@index([address])
+  @@index([userId])
+}
+
+model WalletSecret {
+  id         String   @id @default(cuid())
+  walletId   String   @unique
+  wallet     Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  ciphertext String
+  iv         String
+  authTag    String
+  keyVersion Int      @default(1)
+  createdAt  DateTime @default(now())
+}
+
+model Token {
+  id          String           @id @default(cuid())
+  chainId     Int
+  address     String
+  symbol      String
+  name        String
+  decimals    Int
+  logoUrl     String?
+  verified    Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  watchlist   Watchlist[]
+  positions   Position[]
+  snapshots   PriceSnapshot[]
+  priceAlerts PriceAlert[]
+
+  @@unique([chainId, address])
+  @@index([symbol])
+  @@index([verified])
+}
+
+model Watchlist {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenId   String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     Token    @relation(fields: [tokenId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, tokenId])
+  @@index([userId])
+}
+
+model Trade {
+  id                 String      @id @default(cuid())
+  tradeRequestId     String      @unique
+  userId             String
+  walletId           String
+  tokenIn            String
+  tokenOut           String
+  amountIn           String
+  amountOut          String
+  minAmountOut       String
+  price              String
+  slippage           String
+  fee                String
+  serviceFeeBps      Int
+  serviceFeeAmount   String
+  networkFeeAmount   String
+  route              String
+  quoteId            String?
+  quoteExpiresAt     DateTime?
+  status             TradeStatus @default(CREATED)
+  transactionHash    String?
+  errorCode          String?
+  errorMessage       String?
+  executionProtection String     @default("standard")
+  createdAt          DateTime    @default(now())
+  submittedAt        DateTime?
+  confirmedAt        DateTime?
+  user               User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wallet             Wallet      @relation(fields: [walletId], references: [id], onDelete: Restrict)
+
+  @@index([userId, createdAt])
+  @@index([status])
+  @@index([transactionHash])
+}
+
+model Position {
+  id                 String   @id @default(cuid())
+  userId             String
+  tokenId            String
+  quantity           String
+  averageEntryPrice  String
+  realizedPnl        String   @default("0")
+  unrealizedPnl      String   @default("0")
+  updatedAt          DateTime @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token              Token    @relation(fields: [tokenId], references: [id], onDelete: Restrict)
+  lots               PositionLot[]
+
+  @@unique([userId, tokenId])
+  @@index([userId])
+}
+
+model PositionLot {
+  id          String    @id @default(cuid())
+  userId      String
+  positionId  String
+  quantity    String
+  unitCostUsd String
+  openedAt    DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  position    Position  @relation(fields: [positionId], references: [id], onDelete: Cascade)
+
+  @@index([positionId, openedAt])
+}
+
+model PriceSnapshot {
+  id         String   @id @default(cuid())
+  tokenId    String
+  price      String
+  volume24h  String?
+  liquidity  String?
+  marketCap  String?
+  source     String
+  timestamp  DateTime @default(now())
+  token      Token    @relation(fields: [tokenId], references: [id], onDelete: Cascade)
+
+  @@index([tokenId, timestamp])
+}
+
+model Transaction {
+  id            String            @id @default(cuid())
+  userId        String
+  type          TransactionType
+  hash          String?
+  status        TransactionStatus @default(CREATED)
+  fromAddress   String
+  toAddress     String?
+  tokenAddress  String?
+  amount        String?
+  fee           String?
+  errorCode     String?
+  errorMessage  String?
+  createdAt     DateTime          @default(now())
+  confirmedAt   DateTime?
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([hash])
+  @@index([status])
+}
+
+model Referral {
+  id             String   @id @default(cuid())
+  referrerUserId String
+  referredUserId String   @unique
+  createdAt      DateTime @default(now())
+  referrer       User     @relation("Referrer", fields: [referrerUserId], references: [id], onDelete: Cascade)
+  referred       User     @relation("Referred", fields: [referredUserId], references: [id], onDelete: Cascade)
+
+  @@index([referrerUserId])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  metadata  Json
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([action])
+}
+
+model PriceAlert {
+  id          String   @id @default(cuid())
+  userId      String
+  tokenId     String
+  targetPrice String
+  direction   String
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token       Token    @relation(fields: [tokenId], references: [id], onDelete: Cascade)
+
+  @@index([userId, active])
+}
+
+model FeeConfig {
+  id             String   @id @default("default")
+  tradingFeeBps  Int      @default(5)
+  withdrawalFeeBps Int    @default(0)
+  referralRewardBps Int   @default(0)
+  updatedAt      DateTime @updatedAt
+}
+
+model TrendingRule {
+  id        String   @id @default("default")
+  metric    String   @default("volume")
+  windowHours Int    @default(24)
+  updatedAt DateTime @updatedAt
+}

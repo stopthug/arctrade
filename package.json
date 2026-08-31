@@ -1,0 +1,28 @@
+{
+  "name": "arctrade",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ArcTrade — trade Arc tokens directly from Telegram.",
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @arctrade/api --filter @arctrade/bot --filter @arctrade/worker --filter @arctrade/web dev",
+    "dev:api": "pnpm --filter @arctrade/api dev",
+    "dev:bot": "pnpm --filter @arctrade/bot dev",
+    "dev:web": "pnpm --filter @arctrade/web dev",
+    "dev:worker": "pnpm --filter @arctrade/worker dev",
+    "build": "pnpm --filter @arctrade/types build && pnpm --filter @arctrade/config build && pnpm --filter @arctrade/logging build && pnpm --filter @arctrade/security build && pnpm --filter @arctrade/ui build && pnpm --filter @arctrade/database build && pnpm --filter @arctrade/blockchain build && pnpm --filter @arctrade/wallet build && pnpm --filter @arctrade/trading build && pnpm --filter @arctrade/api build && pnpm --filter @arctrade/bot build && pnpm --filter @arctrade/worker build && pnpm --filter @arctrade/web build",
+    "test": "pnpm --filter @arctrade/security test && pnpm --filter @arctrade/trading test && pnpm --filter @arctrade/blockchain test && pnpm --filter @arctrade/wallet test && pnpm --filter @arctrade/database test",
+    "test:e2e": "pnpm --filter @arctrade/web test:e2e",
+    "lint": "pnpm -r --if-present lint",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "prisma": "pnpm --filter @arctrade/database prisma",
+    "db:generate": "pnpm --filter @arctrade/database prisma generate",
+    "db:migrate": "pnpm --filter @arctrade/database prisma migrate dev",
+    "db:push": "pnpm --filter @arctrade/database prisma db push",
+    "db:seed": "pnpm --filter @arctrade/database seed",
+    "db:studio": "pnpm --filter @arctrade/database prisma studio"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "@arctrade/bot",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --env-file=../../.env src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node --env-file=../../.env dist/index.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@arctrade/blockchain": "workspace:*",
+    "@arctrade/config": "workspace:*",
+    "@arctrade/database": "workspace:*",
+    "@arctrade/logging": "workspace:*",
+    "@arctrade/security": "workspace:*",
+    "@arctrade/trading": "workspace:*",
+    "@arctrade/types": "workspace:*",
+    "@arctrade/wallet": "workspace:*",
+    "grammy": "^1.35.0",
+    "ioredis": "^5.4.2",
+    "viem": "^2.23.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.1",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3"
+  }
+}

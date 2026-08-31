@@ -1,0 +1,10 @@
+export type { TradingProvider } from "./providers/provider-interface.js";
+export { createTradingProvider } from "./providers/provider-adapter.js";
+export { CircleSwapProvider } from "./providers/circle-swap.js";
+export { UnavailableTradingProvider } from "./providers/unavailable.js";
+export { QuoteService } from "./quote-service.js";
+export { TradeEngine, formatInsufficientGas } from "./trade-engine.js";
+export { FeeService, feeService } from "./fees.js";
+export { MarketDataService, readTokenBalance, upsertToken } from "./market-data.js";
+export { applyConfirmedTrade, recomputePosition } from "./portfolio.js";
+export { getTrending } from "./trending.js";
